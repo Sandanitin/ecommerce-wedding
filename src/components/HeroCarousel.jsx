@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, memo, useCallback } from 'react'
 
 const defaultSlides = [
   {
@@ -24,32 +24,32 @@ const defaultSlides = [
   },
 ]
 
-const HeroCarousel = ({ slides = defaultSlides, intervalMs = 5000 }) => {
+const HeroCarousel = memo(({ slides = defaultSlides, intervalMs = 5000 }) => {
   const [index, setIndex] = useState(0)
   const timerRef = useRef(null)
   const touchStartXRef = useRef(null)
   const total = slides.length
 
-  const goTo = (i) => setIndex((i + total) % total)
-  const next = () => goTo(index + 1)
-  const prev = () => goTo(index - 1)
+  const goTo = useCallback((i) => setIndex((i + total) % total), [total])
+  const next = useCallback(() => goTo(index + 1), [goTo, index])
+  const prev = useCallback(() => goTo(index - 1), [goTo, index])
 
-  const start = () => {
+  const start = useCallback(() => {
     stop()
     timerRef.current = setInterval(() => {
       setIndex((i) => (i + 1) % total)
     }, intervalMs)
-  }
-  const stop = () => {
+  }, [total, intervalMs])
+  
+  const stop = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = null
-  }
+  }, [])
 
   useEffect(() => {
     start()
     return stop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [total, intervalMs])
+  }, [start, stop])
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -58,20 +58,20 @@ const HeroCarousel = ({ slides = defaultSlides, intervalMs = 5000 }) => {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [])
+  }, [next, prev])
 
   const slideStyle = useMemo(() => ({
     transform: `translateX(-${index * 100}%)`,
   }), [index])
 
-  const handleImgError = (e) => {
+  const handleImgError = useCallback((e) => {
     if (!e?.currentTarget) return
     const fb = e.currentTarget.getAttribute('data-fallback') || '/images/hero1.jpg'
     e.currentTarget.onerror = null
     e.currentTarget.src = fb
-  }
+  }, [])
 
-  const buildSrcSet = (url) => {
+  const buildSrcSet = useCallback((url) => {
     try {
       if (url.startsWith('/')) return undefined
       const base = url.split('?')[0]
@@ -85,7 +85,7 @@ const HeroCarousel = ({ slides = defaultSlides, intervalMs = 5000 }) => {
     } catch {
       return undefined
     }
-  }
+  }, [])
 
   return (
     <div className="relative group" onMouseEnter={stop} onMouseLeave={start} onTouchStart={(e) => { touchStartXRef.current = e.changedTouches[0].clientX }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (touchStartXRef.current ?? 0); if (dx > 40) prev(); if (dx < -40) next(); touchStartXRef.current = null }}>
@@ -130,7 +130,7 @@ const HeroCarousel = ({ slides = defaultSlides, intervalMs = 5000 }) => {
       </div>
     </div>
   )
-}
+})
 
 export default HeroCarousel
 

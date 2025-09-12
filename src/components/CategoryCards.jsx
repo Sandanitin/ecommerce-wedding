@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 const categories = [
 	{ id: 'wedding', title: 'Wedding Dresses', image: '/images/wedding dresses.jpg' },
 	{ id: 'bridal-accessories', title: 'Bridal Accessories', image: '/images/bridal assessories.jpg' },
 	{ id: 'bridal-jewelry', title: 'Bridal Jewelry', image: '/images/bridal jewerlay.jpg' },
+	{ id: 'groom-suits', title: 'Groom Suits', image: '/images/hero3.jpg' },
+	{ id: 'groom-accessories', title: 'Groom Accessories', image: '/images/hero1.jpg' },
+	{ id: 'groom-jewelry', title: 'Groom Jewelry', image: '/images/hero2.jpg' },
 ]
 
-const CategoryCards = () => {
+const CategoryCards = memo(() => {
 	const handleImgError = (e) => {
 		if (!e?.currentTarget) return
 		e.currentTarget.onerror = null
@@ -33,14 +36,15 @@ const CategoryCards = () => {
 		<section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 			<div className="text-center mb-6">
 				<h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-					<span className="bg-gradient-to-r from-rose-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">Bridal Collections</span>
+					<span className="bg-gradient-to-r from-rose-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">Bride & Groom Collections</span>
 				</h2>
 				<p className="mt-1 text-gray-600">Discover everything you need for your perfect wedding day</p>
-				<div className="mt-4">
-					<Link to="/products?category=wedding" className="btn-secondary">View all bridal</Link>
+				<div className="mt-4 flex gap-3 justify-center">
+					<Link to="/products?category=wedding" className="btn-secondary">Shop Bride</Link>
+					<Link to="/products?category=groom-suits" className="btn-secondary">Shop Groom</Link>
 				</div>
 			</div>
-			<div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
 				{categories.map(c => (
 					<Link key={c.id} to={`/products?category=${encodeURIComponent(c.id)}`} className="group">
 						<div className="rounded-[1.25rem] p-[1px] bg-gradient-to-br from-rose-400 via-pink-500 to-purple-600 transition-transform group-hover:-translate-y-0.5">
@@ -74,7 +78,7 @@ const CategoryCards = () => {
 			</div>
 		</section>
 	)
-}
+})
 
 export default CategoryCards
 

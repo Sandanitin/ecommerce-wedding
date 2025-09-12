@@ -12,12 +12,25 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: false,
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          icons: ['@heroicons/react']
+        }
+      }
+    }
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
     }
   },
-  publicDir: 'public'
+  publicDir: 'public',
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', '@heroicons/react']
+  }
 })

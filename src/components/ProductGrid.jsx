@@ -1,9 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { memo } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
-const ProductGrid = ({ products }) => {
+const ProductGrid = memo(({ products }) => {
   const { addItem } = useCart()
+  const navigate = useNavigate()
   
   const handleImgError = (e) => {
     if (!e?.currentTarget) return
@@ -31,7 +32,7 @@ const ProductGrid = ({ products }) => {
       {products.map(p => (
         <div key={p.id} className="group bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 hover:shadow-lg hover:ring-rose-200/50 transition-all duration-300 transform hover:-translate-y-1">
           <Link to={`/products/${p.id}`} className="block">
-            <div className="relative aspect-[4/5] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden border border-gray-200">
+            <div className="relative aspect-[3/3] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden border border-gray-200">
               <img 
                 src={encodeURI(p.image)} 
                 alt={p.title} 
@@ -61,11 +62,15 @@ const ProductGrid = ({ products }) => {
             </Link>
             <div className="mt-4 flex items-center justify-between">
               <div>
-                <span className="text-xl font-bold text-gray-900">${p.price.toFixed(2)}</span>
+                <span className="text-xl font-bold text-gray-900">₹{p.price.toLocaleString()}</span>
                 <p className="text-xs text-gray-500">Starting price</p>
               </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="mt-4 flex gap-2">
               <button 
-                className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault()
                   addItem(p, 1)
@@ -73,13 +78,23 @@ const ProductGrid = ({ products }) => {
               >
                 Add to Cart
               </button>
+              <button 
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white text-sm font-medium rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+                onClick={(e) => {
+                  e.preventDefault()
+                  addItem(p, 1)
+                  navigate('/checkout')
+                }}
+              >
+                Buy Now
+              </button>
             </div>
           </div>
         </div>
       ))}
     </div>
   )
-}
+})
 
 export default ProductGrid
 

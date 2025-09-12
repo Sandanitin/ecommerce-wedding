@@ -16,6 +16,12 @@ const products = [
   { id: 13, title: 'Wedding Guest Book', category: 'bridal-accessories', price: 39.99, rating: 4.1, image: '/images/hero3.jpg', description: 'Beautiful leather-bound guest book for your wedding memories.' },
   { id: 14, title: 'Bridal Robe', category: 'bridal-accessories', price: 69.99, rating: 4.4, image: '/images/hero2.jpg', description: 'Luxurious satin robe with lace trim for getting ready photos.' },
   { id: 15, title: 'Wedding Cake Topper', category: 'bridal-accessories', price: 59.99, rating: 4.3, image: '/images/hero1.jpg', description: 'Elegant crystal cake topper to crown your wedding cake.' },
+  // Groom items
+  { id: 16, title: 'Classic Black Tuxedo', category: 'groom-suits', price: 499.99, rating: 4.8, image: '/images/hero2.jpg', description: 'Tailored-fit black tuxedo with satin lapels for a timeless groom look.' },
+  { id: 17, title: 'Navy Slim-Fit Suit', category: 'groom-suits', price: 449.99, rating: 4.6, image: '/images/hero3.jpg', description: 'Modern navy suit with slim silhouette and breathable fabric.' },
+  { id: 18, title: 'Silk Bow Tie', category: 'groom-accessories', price: 39.99, rating: 4.5, image: '/images/hero1.jpg', description: 'Premium silk bow tie to complement your tuxedo or suit.' },
+  { id: 19, title: 'Cufflinks Set', category: 'groom-accessories', price: 59.99, rating: 4.4, image: '/images/hero2.jpg', description: 'Elegant stainless steel cufflinks set with subtle detailing.' },
+  { id: 20, title: 'Mens Wedding Band', category: 'groom-jewelry', price: 299.99, rating: 4.7, image: '/images/hero3.jpg', description: 'Classic men\'s wedding band in polished tungsten.' },
 ]
 
 export default products
