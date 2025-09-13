@@ -77,6 +77,27 @@ const Cart = () => {
                       <div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.title}</h3>
                         <p className="text-gray-600 mb-2">Category: {item.category}</p>
+                        
+                        {/* Color and Size Display */}
+                        <div className="flex gap-4 mb-3">
+                          {item.selectedColor && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-600">Color:</span>
+                              <span className="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm font-medium">
+                                {item.selectedColor}
+                              </span>
+                            </div>
+                          )}
+                          {item.selectedSize && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-600">Size:</span>
+                              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                                {item.selectedSize}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
                         <p className="text-2xl font-bold text-gray-900">₹{item.price.toLocaleString()}</p>
                       </div>
                       

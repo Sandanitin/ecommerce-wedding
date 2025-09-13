@@ -4,12 +4,10 @@ import { useCart } from '../context/CartContext'
 import { 
   FaHome, 
   FaShoppingBag, 
-  FaUser, 
   FaShoppingCart, 
   FaInfoCircle,
   FaEnvelope,
-  FaHeart,
-  FaUserCircle
+  FaUser
 } from 'react-icons/fa'
 
 const BottomNavbar = () => {
@@ -28,20 +26,20 @@ const BottomNavbar = () => {
       label: 'Products'
     },
     {
-      path: '/wishlist',
-      icon: FaHeart,
-      label: 'Wishlist'
-    },
-    {
       path: '/about',
       icon: FaInfoCircle,
       label: 'About'
     },
     {
+      path: '/contact',
+      icon: FaEnvelope,
+      label: 'Contact'
+    },
+    {
       path: '/cart',
       icon: FaShoppingCart,
       label: 'Cart',
-      badge: totals.totalQuantity
+      badge: totals.totalQuantity > 0 ? totals.totalQuantity : null
     }
   ]
 
@@ -53,8 +51,8 @@ const BottomNavbar = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200/50 shadow-xl z-50 md:hidden">
-      <div className="flex items-center justify-around py-1">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-xl z-50 md:hidden">
+      <div className="flex items-center justify-around py-2">
         {navItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.path)
@@ -76,7 +74,7 @@ const BottomNavbar = () => {
                     : 'text-gray-500 hover:scale-105'
                 }`} />
                 {item.badge && item.badge > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold text-[10px] shadow-lg animate-pulse">
                     {item.badge > 9 ? '9+' : item.badge}
                   </span>
                 )}

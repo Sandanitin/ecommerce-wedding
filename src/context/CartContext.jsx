@@ -5,12 +5,27 @@ const CartContext = createContext(null)
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD': {
-      const existing = state.items.find(i => i.id === action.item.id)
+      const existing = state.items.find(i => 
+        i.id === action.item.id && 
+        i.selectedColor === action.selectedColor && 
+        i.selectedSize === action.selectedSize
+      )
       let items
       if (existing) {
-        items = state.items.map(i => i.id === action.item.id ? { ...i, quantity: i.quantity + (action.quantity || 1) } : i)
+        items = state.items.map(i => 
+          i.id === action.item.id && 
+          i.selectedColor === action.selectedColor && 
+          i.selectedSize === action.selectedSize
+            ? { ...i, quantity: i.quantity + (action.quantity || 1) } 
+            : i
+        )
       } else {
-        items = [...state.items, { ...action.item, quantity: action.quantity || 1 }]
+        items = [...state.items, { 
+          ...action.item, 
+          quantity: action.quantity || 1,
+          selectedColor: action.selectedColor || '',
+          selectedSize: action.selectedSize || ''
+        }]
       }
       return { ...state, items }
     }
@@ -34,7 +49,8 @@ const cartReducer = (state, action) => {
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] })
 
-  const addItem = (item, quantity = 1) => dispatch({ type: 'ADD', item, quantity })
+  const addItem = (item, quantity = 1, selectedColor = '', selectedSize = '') => 
+    dispatch({ type: 'ADD', item, quantity, selectedColor, selectedSize })
   const removeItem = (id) => dispatch({ type: 'REMOVE', id })
   const updateQuantity = (id, quantity) => dispatch({ type: 'UPDATE_QTY', id, quantity })
   const clearCart = () => dispatch({ type: 'CLEAR' })

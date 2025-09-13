@@ -73,7 +73,7 @@ const ProductGrid = memo(({ products }) => {
                 className="flex-1 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault()
-                  addItem(p, 1)
+                  addItem(p, 1, '', '')
                 }}
               >
                 Add to Cart
@@ -82,7 +82,7 @@ const ProductGrid = memo(({ products }) => {
                 className="flex-1 px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-800 text-white text-sm font-medium rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault()
-                  addItem(p, 1)
+                  addItem(p, 1, '', '')
                   navigate('/checkout')
                 }}
               >
