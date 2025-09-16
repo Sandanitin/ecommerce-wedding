@@ -1,10 +1,43 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { FaArrowLeft, FaCreditCard, FaLock, FaCheckCircle, FaTruck, FaShieldAlt, FaUndo } from 'react-icons/fa'
+import frontendApi from '../services/api'
+import { useAuth } from '../context/AuthContext'
+
+const createBackendOrder = async ({ cartItems, totals, formData }) => {
+  const items = cartItems.map(item => ({
+    product: item.id,
+    quantity: item.quantity,
+    price: item.price
+  }))
+  const shippingAddress = {
+    street: formData.address,
+    city: formData.city,
+    state: formData.state || 'NA',
+    zipCode: formData.postalCode,
+    country: formData.country || 'India'
+  }
+  const payload = {
+    items,
+    shippingAddress,
+    paymentMethod: 'razorpay',
+    contactPhone: formData.phone,
+    notes: 'Order created after payment from Checkout page'
+  }
+  try {
+    const res = await frontendApi.orders.create(payload)
+    return res?.data?.success === true
+  } catch (err) {
+    console.error('Failed to create backend order:', err)
+    return false
+  }
+}
 
 const Checkout = () => {
   const { items, totals, clearCart } = useCart()
+  const navigate = useNavigate()
+  const { isAuthenticated, loading } = useAuth()
   const [placed, setPlaced] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
@@ -14,9 +47,16 @@ const Checkout = () => {
     phone: '',
     address: '',
     city: '',
+    state: '',
     postalCode: '',
     country: 'India'
   })
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login')
+    }
+  }, [loading, isAuthenticated, navigate])
 
   const handleInputChange = (e) => {
     setFormData({
@@ -67,6 +107,11 @@ const Checkout = () => {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault()
+
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
     
     // Validate shipping form
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.address || !formData.city || !formData.postalCode) {
@@ -85,9 +130,18 @@ const Checkout = () => {
         return
       }
 
+      // Read Razorpay Key ID from environment (public key only)
+      const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID
+      if (!razorpayKeyId) {
+        alert('Razorpay Key ID is not configured. Please set VITE_RAZORPAY_KEY_ID in your environment.')
+        setIsProcessing(false)
+        return
+      }
+
       // Create order on your backend (for demo, we'll use mock data)
+      const orderAmountPaise = Math.round(totals.total * 100) // Convert to paise and prevent float issues
       const orderData = {
-        amount: totals.total * 100, // Convert to paise
+        amount: orderAmountPaise,
         currency: 'INR',
         receipt: `order_${Date.now()}`,
         notes: {
@@ -107,15 +161,19 @@ const Checkout = () => {
       }
 
       const options = {
-        key: 'rzp_test_1DP5mmOlF5G5ag', // Replace with your Razorpay key
+        key: razorpayKeyId, // Provided via Vite env var
         amount: mockOrderResponse.amount,
         currency: mockOrderResponse.currency,
         name: 'Bridal Dreams',
         description: `Order for ${items.length} item(s)`,
         // Remove order_id for now - we'll create a simple payment without order
-        handler: function (response) {
+        handler: async function (response) {
           // Payment successful
           console.log('Payment successful:', response)
+          const created = await createBackendOrder({ cartItems: items, totals, formData })
+          if (!created) {
+            alert('Payment succeeded, but order creation failed. Please contact support.')
+          }
           alert('Payment successful! Order placed.')
           setPlaced(true)
           clearCart()
@@ -162,13 +220,17 @@ const Checkout = () => {
       )
       
       if (proceedWithDemoPayment) {
-        // Simulate successful payment
-        setTimeout(() => {
+        // Simulate successful payment and create backend order
+        setTimeout(async () => {
+          const created = await createBackendOrder({ cartItems: items, totals, formData })
+          if (!created) {
+            alert('Demo payment succeeded, but order creation failed. Please contact support.')
+          }
           alert('Demo payment successful! Order placed.')
           setPlaced(true)
           clearCart()
           setIsProcessing(false)
-        }, 1000)
+        }, 800)
       } else {
         setIsProcessing(false)
       }
@@ -313,6 +375,17 @@ const Checkout = () => {
                     />
                   </div>
                   <div>
+                    <label className="block text-sm font-semibold text-gray-800 mb-2">State *</label>
+                    <input 
+                      type="text"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
+                      required 
+                    />
+                  </div>
+                  <div>
                     <label className="block text-sm font-semibold text-gray-800 mb-2">Postal Code *</label>
                     <input 
                       type="text"
@@ -322,21 +395,6 @@ const Checkout = () => {
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
                       required 
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">Country *</label>
-                    <select 
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
-                      required
-                    >
-                      <option value="India">India</option>
-                      <option value="USA">United States</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="Canada">Canada</option>
-                    </select>
                   </div>
                 </div>
               </form>

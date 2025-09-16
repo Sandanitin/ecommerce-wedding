@@ -2,12 +2,12 @@ import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 const categories = [
-	{ id: 'wedding', title: 'Wedding Dresses', image: '/images/wedding dresses.jpg' },
-	{ id: 'bridal-accessories', title: 'Bridal Accessories', image: '/images/bridal assessories.jpg' },
-	{ id: 'bridal-jewelry', title: 'Bridal Jewelry', image: '/images/bridal jewerlay.jpg' },
-	{ id: 'groom-suits', title: 'Groom Suits', image: '/images/hero3.jpg' },
-	{ id: 'groom-accessories', title: 'Groom Accessories', image: '/images/hero1.jpg' },
-	{ id: 'groom-jewelry', title: 'Groom Jewelry', image: '/images/hero2.jpg' },
+	{ id: 'wedding-dresses', title: 'Wedding Dresses', image: '/images/wedding dresses.jpg', icon: '👗', color: 'rose' },
+	{ id: 'photo-shoot-outfits', title: 'Photo Shoot Outfits', image: '/images/hero1.jpg', icon: '📸', color: 'rose' },
+	{ id: 'sangeet-wear', title: 'Sangeet Wear', image: '/images/hero2.jpg', icon: '💃', color: 'rose' },
+	{ id: 'sherwanis-suits', title: 'Sherwanis & Suits', image: '/images/hero3.jpg', icon: '👔', color: 'blue' },
+	{ id: 'groom-photo-shoot', title: 'Groom Photo Shoot', image: '/images/hero1.jpg', icon: '📸', color: 'blue' },
+	{ id: 'pre-wedding-combos', title: 'Pre-Wedding Combos', image: '/images/hero2.jpg', icon: '💑', color: 'purple' },
 ]
 
 const CategoryCards = memo(() => {
@@ -40,8 +40,9 @@ const CategoryCards = memo(() => {
 				</h2>
 				<p className="mt-1 text-gray-600">Discover everything you need for your perfect wedding day</p>
 				<div className="mt-4 flex gap-3 justify-center">
-					<Link to="/products?category=wedding" className="btn-secondary">Shop Bride</Link>
-					<Link to="/products?category=groom-suits" className="btn-secondary">Shop Groom</Link>
+					<Link to="/products?category=wedding-dresses" className="btn-secondary">Shop Bride</Link>
+					<Link to="/products?category=sherwanis-suits" className="btn-secondary">Shop Groom</Link>
+					<Link to="/products?category=pre-wedding-combos" className="btn-secondary">Shop Combos</Link>
 				</div>
 			</div>
 			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
@@ -62,7 +63,13 @@ const CategoryCards = memo(() => {
 								</div>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/15 via-black/5 to-transparent" />
 								<div className="absolute top-3 left-3">
-									<span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100/90 text-rose-800 ring-1 ring-rose-200 backdrop-blur">
+									<span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur shadow-sm ${
+										c.color === 'rose' ? 'bg-rose-100/90 text-rose-800 ring-1 ring-rose-200' :
+										c.color === 'blue' ? 'bg-blue-100/90 text-blue-800 ring-1 ring-blue-200' :
+										c.color === 'purple' ? 'bg-purple-100/90 text-purple-800 ring-1 ring-purple-200' :
+										'bg-gray-100/90 text-gray-800 ring-1 ring-gray-200'
+									}`}>
+										<span>{c.icon}</span>
 										{c.title}
 									</span>
 								</div>

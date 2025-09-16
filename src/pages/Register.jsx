@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser, FaHeart, FaCheck } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -86,13 +90,27 @@ const Register = () => {
     }
 
     setIsSubmitting(true);
+    setErrors({});
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Registration attempt:', formData);
-      // Handle successful registration here
-      alert('Registration successful! Please check your email to verify your account.');
+      // Prepare user data for backend
+      const userData = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone
+      };
+
+      const result = await register(userData);
+      
+      if (result.success) {
+        // Registration successful
+        alert('Registration successful! Please login to continue.');
+        navigate('/login');
+      } else {
+        // Registration failed
+        setErrors({ general: result.message });
+      }
     } catch (error) {
       console.error('Registration error:', error);
       setErrors({ general: 'Registration failed. Please try again.' });

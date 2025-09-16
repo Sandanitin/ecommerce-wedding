@@ -1,21 +1,53 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import products from '../shared/products'
+import frontendApi from '../services/api'
 import { useCart } from '../context/CartContext'
 import { FaStar, FaHeart, FaShare, FaMinus, FaPlus } from 'react-icons/fa'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const ProductDetail = () => {
   const { id } = useParams()
-  const product = products.find(p => String(p.id) === String(id)) || {
-    id: 1,
-    title: "Sample Product Name",
-    price: 4999,
-    image: "/images/hero1.png",
-    category: "Sample Category",
-    description: "This is a sample product description. It should provide extensive details about the product, covering its features, materials, and any other relevant information a customer might want to know before making a purchase. It is designed to give a comprehensive overview. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    rating: 4.5,
-    reviews: 3,
-    inStock: true
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true)
+        const response = await frontendApi.products.getById(id)
+        setProduct(response.data.data)
+      } catch (err) {
+        console.error('Error fetching product:', err)
+        setError('Product not found')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProduct()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading product...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
+          <p className="text-gray-600">The product you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    )
   }
   
   const { addItem } = useCart()
@@ -28,11 +60,18 @@ const ProductDetail = () => {
   const colors = ['Rose Gold', 'Ivory', 'Champagne', 'Blush']
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   
-  const productImages = [
-    "/images/hero1.png",
-    "/images/hero2.jpg", 
-    "/images/hero3.jpg"
-  ]
+  // Get image URL helper
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/images/logo.png';
+    if (imagePath.startsWith('http')) return imagePath;
+    const normalizedPath = imagePath.replace(/\\/g, '/');
+    const finalUrl = `${API_URL}/${normalizedPath}`;
+    return finalUrl;
+  }
+  
+  const productImages = product.images && product.images.length > 0 
+    ? product.images.map(img => getImageUrl(img))
+    : ['/images/logo.png']
 
   const handleAddToCart = () => {
     if (!selectedColor) {
@@ -73,7 +112,7 @@ const ProductDetail = () => {
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
               <img 
                 src={productImages[selectedImage]} 
-                alt={product.title} 
+                alt={product.name} 
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
             </div>
@@ -124,7 +163,7 @@ const ProductDetail = () => {
             {/* Title and Price */}
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                {product.title}
+                {product.name}
               </h1>
               <div className="flex items-center gap-4 mb-4">
                 <span className="text-3xl font-bold text-gray-900">₹{product.price.toLocaleString()}</span>
@@ -132,7 +171,7 @@ const ProductDetail = () => {
                   <div className="flex items-center">
                     {renderStars(product.rating)}
                   </div>
-                  <span className="text-sm text-gray-600">({product.reviews} reviews)</span>
+                  <span className="text-sm text-gray-600">(0 reviews)</span>
                 </div>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
 
 const Footer = () => {
@@ -11,7 +12,7 @@ const Footer = () => {
               <img src="/images/logo.png" alt="Bridal Dreams" className="h-8 w-8" />
               <span className="font-semibold text-gray-900">Bridal Dreams</span>
             </div>
-            <p className="mt-3 text-gray-500 max-w-sm">Your perfect wedding dress awaits. We specialize in elegant bridal gowns and accessories for your special day.</p>
+            <p className="mt-3 text-gray-500 max-w-sm">Your perfect wedding awaits. We specialize in elegant bridal gowns, groom wear, and complete wedding collections for your special day.</p>
             <div className="mt-4 flex items-center gap-4 text-gray-500">
               <a href="#" aria-label="Facebook" className="hover:text-gray-700"><FaFacebook /></a>
               <a href="#" aria-label="Instagram" className="hover:text-gray-700"><FaInstagram /></a>
@@ -20,10 +21,29 @@ const Footer = () => {
             </div>
           </div>
           <div>
-            <p className="font-medium text-gray-900">Bridal</p>
+            <p className="font-medium text-gray-900">👰 Bride Collection</p>
             <ul className="mt-3 space-y-2 text-gray-500">
-              <li><a href="#" className="hover:text-gray-700">Wedding Dresses</a></li>
-              <li><a href="#" className="hover:text-gray-700">Bridal Accessories</a></li>
+              <li><Link to="/products?category=wedding-dresses" className="hover:text-gray-700">Wedding Dresses</Link></li>
+              <li><Link to="/products?category=photo-shoot-outfits" className="hover:text-gray-700">Photo Shoot Outfits</Link></li>
+              <li><Link to="/products?category=sangeet-wear" className="hover:text-gray-700">Sangeet Wear</Link></li>
+              <li><Link to="/products?category=bridal-jewelry" className="hover:text-gray-700">Bridal Jewelry</Link></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">🤵 Groom Collection</p>
+            <ul className="mt-3 space-y-2 text-gray-500">
+              <li><Link to="/products?category=sherwanis-suits" className="hover:text-gray-700">Sherwanis & Suits</Link></li>
+              <li><Link to="/products?category=groom-photo-shoot" className="hover:text-gray-700">Photo Shoot Outfits</Link></li>
+              <li><Link to="/products?category=groom-sangeet" className="hover:text-gray-700">Sangeet Wear</Link></li>
+              <li><Link to="/products?category=groom-jewelry" className="hover:text-gray-700">Groom Accessories</Link></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">💑 Couple Combos</p>
+            <ul className="mt-3 space-y-2 text-gray-500">
+              <li><Link to="/products?category=pre-wedding-combos" className="hover:text-gray-700">Pre-Wedding Combos</Link></li>
+              <li><Link to="/products?category=wedding-day-combos" className="hover:text-gray-700">Wedding Day Combos</Link></li>
+              <li><Link to="/products?category=sangeet-haldi-combos" className="hover:text-gray-700">Sangeet & Haldi Combos</Link></li>
             </ul>
           </div>
           <div>

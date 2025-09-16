@@ -2,6 +2,22 @@ import React, { memo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Function to get the full image URL
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return '/images/logo.png';
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  // Convert Windows backslashes to forward slashes for URLs
+  const normalizedPath = imagePath.replace(/\\/g, '/');
+  
+  // Backend serves images from /uploads route
+  const finalUrl = `${API_URL}/${normalizedPath}`;
+  
+  return finalUrl;
+};
+
 const ProductGrid = memo(({ products }) => {
   const { addItem } = useCart()
   const navigate = useNavigate()
@@ -30,16 +46,14 @@ const ProductGrid = memo(({ products }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map(p => (
-        <div key={p.id} className="group bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 hover:shadow-lg hover:ring-rose-200/50 transition-all duration-300 transform hover:-translate-y-1">
-          <Link to={`/products/${p.id}`} className="block">
+        <div key={p._id} className="group bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 hover:shadow-lg hover:ring-rose-200/50 transition-all duration-300 transform hover:-translate-y-1">
+          <Link to={`/products/${p._id}`} className="block">
             <div className="relative aspect-[3/3] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden border border-gray-200">
               <img 
-                src={encodeURI(p.image)} 
-                alt={p.title} 
+                src={getImageUrl(p.images?.[0])} 
+                alt={p.name} 
                 onError={handleImgError}
                 loading="lazy"
-                srcSet={buildSrcSet(p.image)}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -49,15 +63,15 @@ const ProductGrid = memo(({ products }) => {
                 </span>
               </div>
               <div className="absolute top-3 left-3">
-                <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-rose-100/90 text-rose-700 ring-1 ring-rose-200 backdrop-blur">
+                <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-white/90 text-gray-700 ring-1 ring-gray-200 backdrop-blur shadow-sm">
                   {p.category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                 </span>
               </div>
             </div>
           </Link>
           <div className="p-5">
-            <Link to={`/products/${p.id}`} className="block group">
-              <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-rose-600 transition-colors">{p.title}</h3>
+            <Link to={`/products/${p._id}`} className="block group">
+              <h3 className="text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-rose-600 transition-colors">{p.name}</h3>
               <p className="mt-2 text-sm text-gray-600 line-clamp-2">{p.description}</p>
             </Link>
             <div className="mt-4 flex items-center justify-between">

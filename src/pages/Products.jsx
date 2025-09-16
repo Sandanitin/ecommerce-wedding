@@ -1,6 +1,7 @@
+
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import productsData from '../shared/products'
+import frontendApi from '../services/api'
 import ProductGrid from '../components/ProductGrid'
 
 const Products = () => {
@@ -10,6 +11,9 @@ const Products = () => {
   const [sort, setSort] = useState(searchParams.get('sort') || 'popular')
   const [view, setView] = useState(searchParams.get('view') || 'grid')
   const [visible, setVisible] = useState(8)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const handleImgError = (e) => {
     if (!e?.currentTarget) return
@@ -32,19 +36,47 @@ const Products = () => {
     }
   }
 
-  const categories = useMemo(() => ['all', ...Array.from(new Set(productsData.map(p => p.category)))], [])
+  // Fetch products from backend
+  const fetchProducts = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await frontendApi.products.getAll({
+        category: category !== 'all' ? category : undefined,
+        search: query || undefined
+      })
+      setProducts(response.data.data || [])
+    } catch (err) {
+      console.error('Error fetching products:', err)
+      setError('Failed to load products. Please try again.')
+      setProducts([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Get categories from backend products
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(products.map(p => p.category)))
+    return ['all', ...uniqueCategories]
+  }, [products])
 
   const filtered = useMemo(() => {
-    let list = productsData.filter(p => {
-      const matchesQuery = p.title.toLowerCase().includes(query.toLowerCase())
+    let list = products.filter(p => {
+      const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase())
       const matchesCategory = category === 'all' || p.category === category
       return matchesQuery && matchesCategory
     })
     if (sort === 'price-asc') list = [...list].sort((a, b) => a.price - b.price)
     if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price)
-    if (sort === 'rating') list = [...list].sort((a, b) => b.rating - a.rating)
+    if (sort === 'rating') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0))
     return list
-  }, [query, category])
+  }, [products, query, category, sort])
+
+  // Fetch products when component mounts or filters change
+  useEffect(() => {
+    fetchProducts()
+  }, [category, query])
 
   useEffect(() => {
     const next = {}
@@ -127,40 +159,58 @@ const Products = () => {
           </div>
         </div>
         {/* Products Section */}
-        {view === 'grid' ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
+            <span className="ml-3 text-gray-600">Loading products...</span>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <div className="text-red-500 text-lg font-semibold mb-4">{error}</div>
+            <button 
+              onClick={fetchProducts}
+              className="px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-gray-500 text-lg font-semibold mb-4">No products found</div>
+            <p className="text-gray-400">Try adjusting your search or filter criteria</p>
+          </div>
+        ) : view === 'grid' ? (
           <ProductGrid products={filtered.slice(0, visible)} />
         ) : (
           <div className="space-y-4">
             {filtered.slice(0, visible).map(p => (
-              <div key={p.id} className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm ring-1 ring-black/5 hover:shadow-md hover:ring-rose-200/50 transition-all duration-300">
+              <div key={p._id} className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm ring-1 ring-black/5 hover:shadow-md hover:ring-rose-200/50 transition-all duration-300">
                 <div className="flex gap-6 items-center">
                   <div className="relative">
                     <img 
-                      src={encodeURI(p.image)} 
-                      alt={p.title} 
+                      src={p.images?.[0] ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${p.images[0].replace(/\\/g, '/')}` : '/images/logo.png'} 
+                      alt={p.name} 
                       onError={handleImgError}
                       loading="lazy"
-                      srcSet={buildSrcSet(p.image)}
-                      sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 15vw"
                       className="h-32 w-32 object-cover rounded-xl shadow-sm group-hover:scale-105 transition-transform duration-300 bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200" 
                     />
                     <div className="absolute -top-2 -right-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-700 ring-1 ring-rose-200">
-                        ⭐ {p.rating}
+                        ⭐ {p.rating || 4.5}
                       </span>
                     </div>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-rose-600 transition-colors">{p.title}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-rose-600 transition-colors">{p.name}</h3>
                         <p className="text-sm text-gray-500 mt-1">
                           {p.category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                         </p>
                         <p className="text-gray-600 mt-2 line-clamp-2">{p.description}</p>
                       </div>
                       <div className="text-right ml-4">
-                        <p className="text-2xl font-bold text-gray-900">${p.price.toFixed(2)}</p>
+                        <p className="text-2xl font-bold text-gray-900">₹{p.price.toLocaleString()}</p>
                         <button className="mt-3 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all duration-200 shadow-sm hover:shadow-md">
                           Add to Cart
                         </button>
@@ -195,5 +245,3 @@ const Products = () => {
 }
 
 export default Products
-
-

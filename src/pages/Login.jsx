@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser, FaHeart } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -11,6 +16,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Get redirect message from location state
+  const redirectMessage = location.state?.message;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,13 +62,19 @@ const Login = () => {
     }
 
     setIsSubmitting(true);
+    setErrors({});
     
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Login attempt:', formData);
-      // Handle successful login here
-      alert('Login successful!');
+      const result = await login(formData);
+      
+      if (result.success) {
+        // Login successful
+        const redirectTo = location.state?.redirectTo || '/';
+        navigate(redirectTo);
+      } else {
+        // Login failed
+        setErrors({ general: result.message });
+      }
     } catch (error) {
       console.error('Login error:', error);
       setErrors({ general: 'Login failed. Please try again.' });
@@ -87,6 +101,11 @@ const Login = () => {
 
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          {redirectMessage && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-600 text-sm">{redirectMessage}</p>
+            </div>
+          )}
           {errors.general && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm">{errors.general}</p>
