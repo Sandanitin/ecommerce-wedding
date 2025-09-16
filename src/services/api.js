@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || 'https://ecommerce-wedding-backend.onrender.com';    
 
 const api = axios.create({
   baseURL: API_URL,
@@ -9,6 +9,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+   
+
 
 // Add a request interceptor to add the auth token to requests
 api.interceptors.request.use(
