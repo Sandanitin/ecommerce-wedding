@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import frontendApi from '../services/api'
 import { useCart } from '../context/CartContext'
 import { FaStar, FaHeart, FaShare, FaMinus, FaPlus } from 'react-icons/fa'
+import { getImageUrl } from '../utils/imageUtils'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -11,16 +12,38 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  
+  // All hooks must be declared before any conditional returns
+  const { addItem } = useCart()
+  const [selectedColor, setSelectedColor] = useState('')
+  const [selectedSize, setSelectedSize] = useState('')
+  const [quantity, setQuantity] = useState(1)
+  const [isWishlisted, setIsWishlisted] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(0)
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
+        setError(null)
+        console.log('Fetching product with ID:', id)
         const response = await frontendApi.products.getById(id)
+        console.log('Product response:', response)
         setProduct(response.data.data)
       } catch (err) {
         console.error('Error fetching product:', err)
-        setError('Product not found')
+        console.error('Error details:', {
+          message: err.message,
+          status: err.response?.status,
+          statusText: err.response?.statusText,
+          data: err.response?.data,
+          config: {
+            url: err.config?.url,
+            method: err.config?.method,
+            baseURL: err.config?.baseURL
+          }
+        })
+        setError(err.response?.data?.message || err.message || 'Product not found')
       } finally {
         setLoading(false)
       }
@@ -44,30 +67,32 @@ const ProductDetail = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600">The product you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">The product you're looking for doesn't exist.</p>
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-red-800 text-sm">
+                <strong>Error:</strong> {error}
+              </p>
+              <p className="text-red-600 text-xs mt-2">
+                Product ID: {id}
+              </p>
+            </div>
+          )}
+          <button 
+            onClick={() => window.history.back()}
+            className="mt-4 px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     )
   }
-  
-  const { addItem } = useCart()
-  const [selectedColor, setSelectedColor] = useState('')
-  const [selectedSize, setSelectedSize] = useState('')
-  const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
-  const [selectedImage, setSelectedImage] = useState(0)
+  // Hooks were moved above; remove duplicates below
 
   const colors = ['Rose Gold', 'Ivory', 'Champagne', 'Blush']
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
   
-  // Get image URL helper
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/images/logo.png';
-    if (imagePath.startsWith('http')) return imagePath;
-    const normalizedPath = imagePath.replace(/\\/g, '/');
-    const finalUrl = `${API_URL}/${normalizedPath}`;
-    return finalUrl;
-  }
   
   const productImages = product.images && product.images.length > 0 
     ? product.images.map(img => getImageUrl(img))

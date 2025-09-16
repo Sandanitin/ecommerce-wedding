@@ -72,9 +72,15 @@ const frontendApi = {
       
       const queryString = queryParams.toString();
       const url = queryString ? `/api/products?${queryString}` : '/api/products';
+      console.log('API getAll URL:', url);
       return api.get(url);
     },
-    getById: (id) => api.get(`/api/products/${id}`),
+    getById: (id) => {
+      const url = `/api/products/${id}`;
+      console.log('API getById URL:', url);
+      console.log('API baseURL:', api.defaults.baseURL);
+      return api.get(url);
+    },
   },
 
   // Auth

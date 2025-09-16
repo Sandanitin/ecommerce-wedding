@@ -1,32 +1,12 @@
 import React, { memo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-// Function to get the full image URL
-const getImageUrl = (imagePath) => {
-  if (!imagePath) return '/images/logo.png';
-  if (imagePath.startsWith('http')) return imagePath;
-  
-  // Convert Windows backslashes to forward slashes for URLs
-  const normalizedPath = imagePath.replace(/\\/g, '/');
-  
-  // Backend serves images from /uploads route
-  const finalUrl = `${API_URL}/${normalizedPath}`;
-  
-  return finalUrl;
-};
+import { getImageUrl, handleImageError } from '../utils/imageUtils'
 
 const ProductGrid = memo(({ products }) => {
   const { addItem } = useCart()
   const navigate = useNavigate()
   
-  const handleImgError = (e) => {
-    if (!e?.currentTarget) return
-    e.currentTarget.onerror = null
-    e.currentTarget.src = '/images/logo.png'
-  }
 
   const buildSrcSet = (url) => {
     try {
@@ -52,10 +32,24 @@ const ProductGrid = memo(({ products }) => {
               <img 
                 src={getImageUrl(p.images?.[0])} 
                 alt={p.name} 
-                onError={handleImgError}
+                onError={handleImageError}
                 loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
               />
+              {Array.isArray(p.images) && p.images.length > 1 && (
+                <div className="absolute bottom-0 right-0 p-2 flex gap-2">
+                  {p.images.slice(1).map((image, index) => (
+                    <img
+                      key={index}
+                      src={getImageUrl(image)}
+                      alt={`${p.name} ${index + 2}`}
+                      onError={handleImageError}
+                      loading="lazy"
+                      className="w-12 h-12 object-cover rounded-lg border-2 border-white"
+                    />
+                  ))}
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute top-3 right-3">
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-white/90 text-gray-900 ring-1 ring-black/10 backdrop-blur">
