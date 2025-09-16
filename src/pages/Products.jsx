@@ -188,7 +188,7 @@ const Products = () => {
                 <div className="flex gap-6 items-center">
                   <div className="relative">
                     <img 
-                      src={p.images?.[0] ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${p.images[0].replace(/\\/g, '/')}` : '/images/logo.png'} 
+                      src={p.images?.[0] ? `/${p.images[0].replace(/\\/g, '/')}` : '/images/logo.png'} 
                       alt={p.name} 
                       onError={handleImgError}
                       loading="lazy"

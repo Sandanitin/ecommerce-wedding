@@ -1,5 +1,3 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 /**
  * Get the full image URL for display
  * @param {string} imagePath - The image path from the database
@@ -12,14 +10,9 @@ export const getImageUrl = (imagePath) => {
     
     const normalizedPath = imagePath.replace(/\\/g, '/');
     
-    // In dev, use relative path so Vite proxy on 5173 serves /uploads
-    if (import.meta.env.DEV) {
-      const ensured = normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
-      return ensured;
-    }
-    
-    // In prod, fall back to API_URL
-    return `${API_URL}/${normalizedPath}`;
+    // Use relative path for both dev and prod (Vercel rewrite handles routing)
+    const ensured = normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+    return ensured;
   } catch {
     return '/images/logo.png';
   }

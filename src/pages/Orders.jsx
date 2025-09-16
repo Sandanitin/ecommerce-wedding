@@ -114,7 +114,7 @@ const Orders = () => {
                   {order.items?.map((it, idx) => (
                     <div key={idx} className="flex gap-4 items-center">
                       <img
-                        src={it.product?.images?.[0] ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${String(it.product.images[0]).replace(/\\/g, '/')}` : '/images/logo.png'}
+                        src={it.product?.images?.[0] ? `/${String(it.product.images[0]).replace(/\\/g, '/')}` : '/images/logo.png'}
                         alt={it.product?.name || 'Product'}
                         className="h-16 w-16 rounded-lg object-cover border"
                         onError={(e) => { e.currentTarget.src = '/images/logo.png' }}
