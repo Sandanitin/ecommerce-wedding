@@ -69,6 +69,8 @@ const CategoryCards = memo(() => {
 										c.color === 'purple' ? 'bg-purple-100/90 text-purple-800 ring-1 ring-purple-200' :
 										'bg-gray-100/90 text-gray-800 ring-1 ring-gray-200'
 									}`}>
+
+										
 										<span>{c.icon}</span>
 										{c.title}
 									</span>
