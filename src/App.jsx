@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -16,13 +16,16 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Orders from './pages/Orders'
 import Profile from './pages/Profile'
+import AdminApp from './admin/App'
 
 const App = () => {
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
   return (
     <AuthProvider>
       <CartProvider>
         <div className="min-h-screen flex flex-col bg-gray-50">
-          <Navbar />
+          {!isAdminRoute && <Navbar />}
           <main className="flex-1 pb-16 md:pb-0">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -36,10 +39,11 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/admin/*" element={<AdminApp />} />
             </Routes>
           </main>
-          <Footer />
-          <BottomNavbar />
+          {!isAdminRoute && <Footer />}
+          {!isAdminRoute && <BottomNavbar />}
         </div>
       </CartProvider>
     </AuthProvider>

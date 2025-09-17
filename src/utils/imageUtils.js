@@ -22,7 +22,11 @@ export const getImageUrl = (imagePath) => {
       normalizedPath = `/${normalizedPath}`;
     }
     
-    // Use relative path for both dev and prod (Vercel rewrite handles routing)
+    // Prefer absolute URL when backend URL is configured
+    if (BACKEND_URL) {
+      return `${BACKEND_URL}${normalizedPath}`;
+    }
+    // Fallback to relative path (dev proxy)
     return normalizedPath;
   } catch {
     return FALLBACK_IMG;

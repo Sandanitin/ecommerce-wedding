@@ -326,10 +326,12 @@ const Checkout = () => {
               <form onSubmit={handlePlaceOrder} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">First Name *</label>
+                    <label htmlFor="checkout-firstName" className="block text-sm font-semibold text-gray-800 mb-2">First Name *</label>
                     <input 
+                      id="checkout-firstName"
                       type="text"
                       name="firstName"
+                      autoComplete="given-name"
                       value={formData.firstName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -337,10 +339,12 @@ const Checkout = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">Last Name *</label>
+                    <label htmlFor="checkout-lastName" className="block text-sm font-semibold text-gray-800 mb-2">Last Name *</label>
                     <input 
+                      id="checkout-lastName"
                       type="text"
                       name="lastName"
+                      autoComplete="family-name"
                       value={formData.lastName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -351,10 +355,12 @@ const Checkout = () => {
                 
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">Email Address *</label>
+                    <label htmlFor="checkout-email" className="block text-sm font-semibold text-gray-800 mb-2">Email Address *</label>
                     <input 
+                      id="checkout-email"
                       type="email"
                       name="email"
+                      autoComplete="email"
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -362,10 +368,12 @@ const Checkout = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">Phone Number *</label>
+                    <label htmlFor="checkout-phone" className="block text-sm font-semibold text-gray-800 mb-2">Phone Number *</label>
                     <input 
+                      id="checkout-phone"
                       type="tel"
                       name="phone"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -375,10 +383,12 @@ const Checkout = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Address *</label>
+                  <label htmlFor="checkout-address" className="block text-sm font-semibold text-gray-800 mb-2">Address *</label>
                   <input 
+                    id="checkout-address"
                     type="text"
                     name="address"
+                    autoComplete="street-address"
                     value={formData.address}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -388,10 +398,12 @@ const Checkout = () => {
                 
                 <div className="grid sm:grid-cols-3 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">City *</label>
+                    <label htmlFor="checkout-city" className="block text-sm font-semibold text-gray-800 mb-2">City *</label>
                     <input 
+                      id="checkout-city"
                       type="text"
                       name="city"
+                      autoComplete="address-level2"
                       value={formData.city}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -399,10 +411,12 @@ const Checkout = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">State *</label>
+                    <label htmlFor="checkout-state" className="block text-sm font-semibold text-gray-800 mb-2">State *</label>
                     <input 
+                      id="checkout-state"
                       type="text"
                       name="state"
+                      autoComplete="address-level1"
                       value={formData.state}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
@@ -410,10 +424,12 @@ const Checkout = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-800 mb-2">Postal Code *</label>
+                    <label htmlFor="checkout-postalCode" className="block text-sm font-semibold text-gray-800 mb-2">Postal Code *</label>
                     <input 
+                      id="checkout-postalCode"
                       type="text"
                       name="postalCode"
+                      autoComplete="postal-code"
                       value={formData.postalCode}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-100 focus:border-rose-500 transition-all duration-300"
