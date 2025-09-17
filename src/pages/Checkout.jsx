@@ -130,10 +130,19 @@ const Checkout = () => {
         return
       }
 
-      // Read Razorpay Key ID from environment (public key only)
-      const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID
+      // Get Razorpay Key ID from backend config (preferred over env to avoid mismatches)
+      let razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID
+      try {
+        const cfg = await frontendApi.payments.getConfig()
+        const keyFromServer = cfg?.data?.data?.keyId
+        if (keyFromServer) {
+          razorpayKeyId = keyFromServer
+        }
+      } catch (_) {
+        // ignore, fallback to env
+      }
       if (!razorpayKeyId) {
-        alert('Razorpay Key ID is not configured. Please set VITE_RAZORPAY_KEY_ID in your environment.')
+        alert('Razorpay Key ID is not configured. Please set it on the server or VITE_RAZORPAY_KEY_ID.')
         setIsProcessing(false)
         return
       }
@@ -152,28 +161,43 @@ const Checkout = () => {
         }
       }
 
-      // In a real app, you would make an API call to your backend to create the order
-      // For demo purposes, we'll use mock data
-      const mockOrderResponse = {
-        id: `order_${Date.now()}`,
-        amount: orderData.amount,
-        currency: orderData.currency
+      // Create Razorpay order on backend
+      let rzpOrder
+      try {
+        const createRes = await frontendApi.payments.createOrder(orderData)
+        rzpOrder = createRes?.data?.data
+      } catch (err) {
+        console.error('Failed creating Razorpay order:', err)
+      }
+      // Fallback to mock if backend failed
+      if (!rzpOrder?.id) {
+        rzpOrder = { id: `order_mock_${Date.now()}`, amount: orderData.amount, currency: orderData.currency }
       }
 
       const options = {
         key: razorpayKeyId, // Provided via Vite env var
-        amount: mockOrderResponse.amount,
-        currency: mockOrderResponse.currency,
+        amount: rzpOrder.amount,
+        currency: rzpOrder.currency,
         name: 'Bridal Dreams',
         description: `Order for ${items.length} item(s)`,
-        // Remove order_id for now - we'll create a simple payment without order
+        order_id: rzpOrder.id,
         handler: async function (response) {
           // Payment successful
           console.log('Payment successful:', response)
-          const created = await createBackendOrder({ cartItems: items, totals, formData })
-          if (!created) {
-            alert('Payment succeeded, but order creation failed. Please contact support.')
+          try {
+            // Verify payment on backend first
+            await frontendApi.payments.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id || rzpOrder.id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+          } catch (verifyErr) {
+            console.error('Payment verification failed:', verifyErr)
+            alert('Payment verification failed. Please contact support with your payment ID.')
           }
+          // Create order in backend after successful payment (idempotent server-side recommended)
+          const created = await createBackendOrder({ cartItems: items, totals, formData })
+          if (!created) alert('Payment succeeded, but order creation failed. Please contact support.')
           alert('Payment successful! Order placed.')
           setPlaced(true)
           clearCart()

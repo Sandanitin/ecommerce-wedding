@@ -26,7 +26,7 @@ const Footer = () => {
               <li><Link to="/products?category=wedding-dresses" className="hover:text-gray-700">Wedding Dresses</Link></li>
               <li><Link to="/products?category=photo-shoot-outfits" className="hover:text-gray-700">Photo Shoot Outfits</Link></li>
               <li><Link to="/products?category=sangeet-wear" className="hover:text-gray-700">Sangeet Wear</Link></li>
-              <li><Link to="/products?category=bridal-jewelry" className="hover:text-gray-700">Bridal Jewelry</Link></li>
+              <li><Link to="/products?category=bride-jewelry" className="hover:text-gray-700">Bridal Jewelry</Link></li>
             </ul>
           </div>
           <div>
@@ -34,7 +34,7 @@ const Footer = () => {
             <ul className="mt-3 space-y-2 text-gray-500">
               <li><Link to="/products?category=sherwanis-suits" className="hover:text-gray-700">Sherwanis & Suits</Link></li>
               <li><Link to="/products?category=groom-photo-shoot" className="hover:text-gray-700">Photo Shoot Outfits</Link></li>
-              <li><Link to="/products?category=groom-sangeet" className="hover:text-gray-700">Sangeet Wear</Link></li>
+              <li><Link to="/products?category=groom-sangeet-wear" className="hover:text-gray-700">Sangeet Wear</Link></li>
               <li><Link to="/products?category=groom-jewelry" className="hover:text-gray-700">Groom Accessories</Link></li>
             </ul>
           </div>

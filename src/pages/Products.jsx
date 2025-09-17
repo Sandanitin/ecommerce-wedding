@@ -7,7 +7,8 @@ import ProductGrid from '../components/ProductGrid'
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(searchParams.get('search') || '')
+  const [debouncedQuery, setDebouncedQuery] = useState(searchParams.get('search') || '')
   // Map friendly slugs (from homepage cards/links) to backend category names
   const slugToCategoryMap = {
     // Bride
@@ -19,11 +20,13 @@ const Products = () => {
     'bride-shoes': 'Bride - Shoes',
     'bride-sunglasses': 'Bride - Sunglasses',
     'bride-jewelry': 'Bride - Jewelry',
+    'bridal-jewelry': 'Bride - Jewelry',
 
     // Groom
     'sherwanis-suits': 'Groom - Wedding Dresses / Sherwanis / Suits',
     'groom-photo-shoot': 'Groom - Photo Shoot Outfits',
     'groom-sangeet-wear': 'Groom - Sangeet Wear',
+    'groom-sangeet': 'Groom - Sangeet Wear',
     'groom-haldi-outfits': 'Groom - Haldi Outfits',
     'groom-shoes': 'Groom - Shoes',
     'groom-sunglasses': 'Groom - Sunglasses',
@@ -68,6 +71,12 @@ const Products = () => {
     }
   }
 
+  // Debounce search input to limit network calls
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query), 300)
+    return () => clearTimeout(t)
+  }, [query])
+
   // Fetch products from backend
   const fetchProducts = async () => {
     try {
@@ -75,7 +84,7 @@ const Products = () => {
       setError(null)
       const response = await frontendApi.products.getAll({
         category: category !== 'all' ? category : undefined,
-        search: query || undefined
+        search: debouncedQuery || undefined
       })
       setProducts(response.data.data || [])
     } catch (err) {
@@ -103,12 +112,12 @@ const Products = () => {
     if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price)
     if (sort === 'rating') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0))
     return list
-  }, [products, query, category, sort])
+  }, [products, debouncedQuery, category, sort])
 
   // Fetch products when component mounts or filters change
   useEffect(() => {
     fetchProducts()
-  }, [category, query])
+  }, [category, debouncedQuery])
 
   // When URL search param changes externally (e.g., navigating from hero), sync category
   useEffect(() => {
@@ -121,9 +130,10 @@ const Products = () => {
     const next = {}
     if (category && category !== 'all') next.category = category
     if (sort && sort !== 'popular') next.sort = sort
+    if (debouncedQuery) next.search = debouncedQuery
     if (view && view !== 'grid') next.view = view
     setSearchParams(next)
-  }, [category, sort, view])
+  }, [category, sort, view, debouncedQuery])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50/30 via-pink-50/20 to-purple-50/30">

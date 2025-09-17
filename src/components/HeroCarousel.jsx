@@ -6,27 +6,27 @@ const defaultSlides = [
     id: 1,
     image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
     fallback: 'https://via.placeholder.com/1200x800?text=Bride+Collection',
-    title: '👰 Bride Collections',
+    title: '👰 Bride Photo Shoot Outfits',
     subtitle: 'Discover our exquisite bridal wear collection',
-    link: '/products?category=wedding-dresses',
+    link: '/products?category=photo-shoot-outfits',
     category: 'bride'
   },
   {
     id: 2,
     image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
     fallback: 'https://via.placeholder.com/1200x800?text=Groom+Collection',
-    title: '🤵 Groom Collections',
+    title: '🤵 Groom Haldi Outfits',
     subtitle: 'Elegant attire for the modern groom',
-    link: '/products?category=sherwanis-suits',
+    link: '/products?category=groom-haldi-outfits',
     category: 'groom'
   },
   {
     id: 3,
     image: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
     fallback: 'https://via.placeholder.com/1200x800?text=Perfect+Combos',
-    title: '💑 Perfect Combos',
+    title: '💑 Combos Wedding Day Combos',
     subtitle: 'Matching sets for the perfect couple',
-    link: '/products?category=pre-wedding-combos',
+    link: '/products?category=wedding-day-combos',
     category: 'combos'
   },
 ]

@@ -95,6 +95,7 @@ const frontendApi = {
 
   // Payments
   payments: {
+    getConfig: () => api.get('/api/payments/config'),
     createOrder: (orderData) => api.post('/api/payments/create-order', orderData),
     verifyPayment: (paymentData) => api.post('/api/payments/verify', paymentData),
     getPaymentDetails: (paymentId) => api.get(`/api/payments/${paymentId}`),
