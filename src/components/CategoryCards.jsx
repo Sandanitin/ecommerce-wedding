@@ -2,12 +2,12 @@ import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 const categories = [
-	{ id: 'wedding-dresses', title: 'Wedding Dresses', image: '/images/wedding dresses.jpg', icon: '👗', color: 'rose' },
-	{ id: 'photo-shoot-outfits', title: 'Photo Shoot Outfits', image: '/images/hero1.jpg', icon: '📸', color: 'rose' },
-	{ id: 'sangeet-wear', title: 'Sangeet Wear', image: '/images/hero2.jpg', icon: '💃', color: 'rose' },
-	{ id: 'sherwanis-suits', title: 'Sherwanis & Suits', image: '/images/hero3.jpg', icon: '👔', color: 'blue' },
-	{ id: 'groom-photo-shoot', title: 'Groom Photo Shoot', image: '/images/hero1.jpg', icon: '📸', color: 'blue' },
-	{ id: 'pre-wedding-combos', title: 'Pre-Wedding Combos', image: '/images/hero2.jpg', icon: '💑', color: 'purple' },
+	{ id: 'wedding-dresses', title: 'Wedding Dresses', image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '👗', color: 'rose' },
+	{ id: 'photo-shoot-outfits', title: 'Photo Shoot Outfits', image: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '📸', color: 'rose' },
+	{ id: 'sangeet-wear', title: 'Sangeet Wear', image: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '💃', color: 'rose' },
+	{ id: 'sherwanis-suits', title: 'Sherwanis & Suits', image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '👔', color: 'blue' },
+	{ id: 'groom-photo-shoot', title: 'Groom Photo Shoot', image: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '📸', color: 'blue' },
+	{ id: 'pre-wedding-combos', title: 'Pre-Wedding Combos', image: 'https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&q=90&w=2400&dpr=2', icon: '💑', color: 'purple' },
 ]
 
 const CategoryCards = memo(() => {
@@ -21,11 +21,12 @@ const CategoryCards = memo(() => {
 		try {
 			if (url.startsWith('/')) return undefined
 			const base = url.split('?')[0]
-			const params = (url.split('?')[1] ?? 'auto=format&fit=crop&q=80')
+			const params = (url.split('?')[1] ?? 'auto=format&fit=crop&q=85&dpr=2')
 			return [
-				`${base}?${params}&w=600 600w`,
-				`${base}?${params}&w=900 900w`,
+				`${base}?${params}&w=800 800w`,
 				`${base}?${params}&w=1200 1200w`,
+				`${base}?${params}&w=1600 1600w`,
+				`${base}?${params}&w=2400 2400w`,
 			].join(', ')
 		} catch {
 			return undefined
@@ -39,11 +40,7 @@ const CategoryCards = memo(() => {
 					<span className="bg-gradient-to-r from-rose-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">Bride & Groom Collections</span>
 				</h2>
 				<p className="mt-1 text-gray-600">Discover everything you need for your perfect wedding day</p>
-				<div className="mt-4 flex gap-3 justify-center">
-					<Link to="/products?category=wedding-dresses" className="btn-secondary">Shop Bride</Link>
-					<Link to="/products?category=sherwanis-suits" className="btn-secondary">Shop Groom</Link>
-					<Link to="/products?category=pre-wedding-combos" className="btn-secondary">Shop Combos</Link>
-				</div>
+
 			</div>
 			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6">
 				{categories.map(c => (
