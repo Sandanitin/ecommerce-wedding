@@ -31,7 +31,7 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg">
             <img 
-              src="/images/logo.png" 
+              src="https://dummyimage.com/64x64/e5e7eb/9ca3af.png&text=BD" 
               alt="Bridal Dreams Logo" 
               className="w-full h-full object-cover"
             />

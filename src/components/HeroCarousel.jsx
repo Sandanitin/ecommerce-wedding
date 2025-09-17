@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, memo, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const defaultSlides = [
   {
@@ -31,6 +32,7 @@ const defaultSlides = [
 ]
 
 const HeroCarousel = memo(({ slides = defaultSlides, intervalMs = 5000 }) => {
+  const navigate = useNavigate()
   const [index, setIndex] = useState(0)
   const timerRef = useRef(null)
   const touchStartXRef = useRef(null)
@@ -99,7 +101,15 @@ const HeroCarousel = memo(({ slides = defaultSlides, intervalMs = 5000 }) => {
         <div className="overflow-hidden rounded-2xl ring-1 ring-black/5">
           <div className="flex transition-transform duration-700 ease-out" style={slideStyle}>
           {slides.map((s) => (
-            <div key={s.id} className="relative min-w-full aspect-[16/10] sm:aspect-[16/9] bg-gray-100">
+            <div
+              key={s.id}
+              role="link"
+              tabIndex={0}
+              aria-label={`View ${s.category} products`}
+              onClick={() => navigate(s.link)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(s.link) } }}
+              className="relative min-w-full aspect-[16/10] sm:aspect-[16/9] bg-gray-100 cursor-pointer"
+            >
               <img src={s.image} data-fallback={s.fallback} alt={s.title} loading={s.id === 1 ? 'eager' : 'lazy'} srcSet={buildSrcSet(s.image)} sizes="100vw" onError={handleImgError} className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03] brightness-110 contrast-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
               <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8 text-white text-center">

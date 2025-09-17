@@ -96,7 +96,7 @@ const ProductDetail = () => {
   
   const productImages = product.images && product.images.length > 0 
     ? product.images.map(img => getImageUrl(img))
-    : ['/images/logo.png']
+    : ['https://dummyimage.com/800x600/e5e7eb/9ca3af.png&text=Image']
 
   const handleAddToCart = () => {
     if (!selectedColor) {

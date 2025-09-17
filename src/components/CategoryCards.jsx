@@ -14,7 +14,7 @@ const CategoryCards = memo(() => {
 	const handleImgError = (e) => {
 		if (!e?.currentTarget) return
 		e.currentTarget.onerror = null
-		e.currentTarget.src = '/images/logo.png'
+		e.currentTarget.src = 'https://dummyimage.com/600x400/e5e7eb/9ca3af.png&text=Image'
 	}
 
 	const buildSrcSet = (url) => {

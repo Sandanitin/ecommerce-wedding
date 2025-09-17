@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-sm">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2">
-              <img src="/images/logo.png" alt="Bridal Dreams" className="h-8 w-8" />
+              <img src="https://dummyimage.com/32x32/e5e7eb/9ca3af.png&text=BD" alt="Bridal Dreams" className="h-8 w-8" />
               <span className="font-semibold text-gray-900">Bridal Dreams</span>
             </div>
             <p className="mt-3 text-gray-500 max-w-sm">Your perfect wedding awaits. We specialize in elegant bridal gowns, groom wear, and complete wedding collections for your special day.</p>

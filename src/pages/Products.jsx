@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
+import { getImageUrl } from '../utils/imageUtils'
 import { useSearchParams } from 'react-router-dom'
 import frontendApi from '../services/api'
 import ProductGrid from '../components/ProductGrid'
@@ -7,7 +8,38 @@ import ProductGrid from '../components/ProductGrid'
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState(searchParams.get('category') || 'all')
+  // Map friendly slugs (from homepage cards/links) to backend category names
+  const slugToCategoryMap = {
+    // Bride
+    'wedding-dresses': 'Bride - Wedding Dresses',
+    'photo-shoot-outfits': 'Bride - Photo Shoot Outfits',
+    'sangeet-wear': 'Bride - Sangeet Wear',
+    'voni-function-outfits': 'Bride - Voni Function Outfits',
+    'haldi-outfits': 'Bride - Haldi Outfits',
+    'bride-shoes': 'Bride - Shoes',
+    'bride-sunglasses': 'Bride - Sunglasses',
+    'bride-jewelry': 'Bride - Jewelry',
+
+    // Groom
+    'sherwanis-suits': 'Groom - Wedding Dresses / Sherwanis / Suits',
+    'groom-photo-shoot': 'Groom - Photo Shoot Outfits',
+    'groom-sangeet-wear': 'Groom - Sangeet Wear',
+    'groom-haldi-outfits': 'Groom - Haldi Outfits',
+    'groom-shoes': 'Groom - Shoes',
+    'groom-sunglasses': 'Groom - Sunglasses',
+    'groom-jewelry': 'Groom - Jewelry',
+
+    // Combos
+    'pre-wedding-combos': 'Combos - Pre-Wedding Photo Shoot Sets',
+    'wedding-day-combos': 'Combos - Wedding Day Combos',
+    'sangeet-haldi-combos': 'Combos - Sangeet/Haldi Twin Themes',
+  }
+  const normalizeCategory = (value) => {
+    if (!value) return 'all'
+    const v = String(value).trim()
+    return slugToCategoryMap[v] || v
+  }
+  const [category, setCategory] = useState(() => normalizeCategory(searchParams.get('category') || 'all'))
   const [sort, setSort] = useState(searchParams.get('sort') || 'popular')
   const [view, setView] = useState(searchParams.get('view') || 'grid')
   const [visible, setVisible] = useState(8)
@@ -18,7 +50,7 @@ const Products = () => {
   const handleImgError = (e) => {
     if (!e?.currentTarget) return
     e.currentTarget.onerror = null
-    e.currentTarget.src = '/images/logo.png'
+    e.currentTarget.src = 'https://dummyimage.com/400x400/e5e7eb/9ca3af.png&text=Image'
   }
 
   const buildSrcSet = (url) => {
@@ -62,10 +94,10 @@ const Products = () => {
   }, [products])
 
   const filtered = useMemo(() => {
+    // Backend applies category filtering; only apply client-side search and sort
     let list = products.filter(p => {
       const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase())
-      const matchesCategory = category === 'all' || p.category === category
-      return matchesQuery && matchesCategory
+      return matchesQuery
     })
     if (sort === 'price-asc') list = [...list].sort((a, b) => a.price - b.price)
     if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price)
@@ -77,6 +109,13 @@ const Products = () => {
   useEffect(() => {
     fetchProducts()
   }, [category, query])
+
+  // When URL search param changes externally (e.g., navigating from hero), sync category
+  useEffect(() => {
+    const paramCat = searchParams.get('category')
+    const normalized = normalizeCategory(paramCat || 'all')
+    setCategory((prev) => (prev === normalized ? prev : normalized))
+  }, [searchParams])
 
   useEffect(() => {
     const next = {}
@@ -188,7 +227,7 @@ const Products = () => {
                 <div className="flex gap-6 items-center">
                   <div className="relative">
                     <img 
-                      src={p.images?.[0] ? `/${p.images[0].replace(/\\/g, '/')}` : '/images/logo.png'} 
+                      src={getImageUrl(p.images?.[0])} 
                       alt={p.name} 
                       onError={handleImgError}
                       loading="lazy"

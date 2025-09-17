@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { getImageUrl } from '../utils/imageUtils'
 import { Link, useNavigate } from 'react-router-dom'
 import frontendApi from '../services/api'
 import { useAuth } from '../context/AuthContext'
@@ -114,10 +115,10 @@ const Orders = () => {
                   {order.items?.map((it, idx) => (
                     <div key={idx} className="flex gap-4 items-center">
                       <img
-                        src={it.product?.images?.[0] ? `/${String(it.product.images[0]).replace(/\\/g, '/')}` : '/images/logo.png'}
+                        src={getImageUrl(it.product?.images?.[0])}
                         alt={it.product?.name || 'Product'}
                         className="h-16 w-16 rounded-lg object-cover border"
-                        onError={(e) => { e.currentTarget.src = '/images/logo.png' }}
+                        onError={(e) => { e.currentTarget.src = 'https://dummyimage.com/100x100/e5e7eb/9ca3af.png&text=Image' }}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 truncate">{it.product?.name || 'Product'}</div>
