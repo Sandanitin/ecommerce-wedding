@@ -22,20 +22,8 @@ const VerifyOTP = () => {
     if (!otp || otp.length !== 6) {
       return toast.error("Please enter a valid 6-digit OTP");
     }
-
-    setLoading(true);
-    try {
-      const res = await adminApi.auth.verifyOTP({ email, otp });
-      
-      if (res.data.success) {
-        toast.success("OTP verified successfully!");
-        setStep("reset");
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid OTP. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    // Do not verify on server here to avoid consuming OTP; verify happens in reset
+    setStep("reset");
   };
 
   const handleResetPassword = async (e) => {
@@ -52,21 +40,29 @@ const VerifyOTP = () => {
     setLoading(true);
     try {
       // Reset password
-      const res = await adminApi.auth.resetPassword({ email, code: otp, newPassword });
+      const normalizedEmail = String(email).trim().toLowerCase();
+      const res = await adminApi.auth.resetPassword({ email: normalizedEmail, code: otp, newPassword });
       
       if (res.data.success) {
         toast.success("Password reset successfully! Logging you in...");
         
-        // Automatically log in with new password
-        const loginResult = await login({ email, password: newPassword });
-        
-        if (loginResult.success) {
-          toast.success("Welcome back! Redirecting to dashboard...");
-          // Redirect to admin dashboard
-          navigate("/admin/dashboard", { replace: true });
-        } else {
+        // Automatically log in with new password via API, then set context
+        try {
+          const loginResp = await adminApi.auth.login({ email: normalizedEmail, password: newPassword });
+          const apiData = loginResp?.data?.data;
+          const token = apiData?.token;
+          const user = apiData?.user;
+          if (loginResp?.data?.success && token && user) {
+            await login(token, user);
+            toast.success("Welcome back! Redirecting to dashboard...");
+            navigate("/admin", { replace: true });
+          } else {
+            toast.error("Password reset successful, but login failed. Please login manually.");
+            navigate("/admin/login");
+          }
+        } catch (e) {
           toast.error("Password reset successful, but login failed. Please login manually.");
-          navigate("/login");
+          navigate("/admin/login");
         }
       }
     } catch (err) {
@@ -79,7 +75,8 @@ const VerifyOTP = () => {
   const handleResendOTP = async () => {
     setLoading(true);
     try {
-      const res = await adminApi.auth.forgotPassword({ email });
+      const normalizedEmail = String(email).trim().toLowerCase();
+      const res = await adminApi.auth.forgotPassword({ email: normalizedEmail });
       
       if (res.data.success) {
         toast.success("New OTP sent to your email!");

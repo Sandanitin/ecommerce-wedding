@@ -43,7 +43,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     if (!resetCode) return toast.error("Please enter the reset code");
     // This step is now handled in VerifyOTP screen
-    navigate("/verify-otp", { state: { email } });
+    navigate("/admin/verify-otp", { state: { email: String(email).trim().toLowerCase() } });
   };
 
   const handleResetPassword = async (e) => {
@@ -53,8 +53,9 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
+      const normalizedEmail = String(email).trim().toLowerCase();
       await adminApi.auth.resetPassword({ 
-        email, 
+        email: normalizedEmail, 
         code: resetCode, 
         newPassword 
       });
@@ -209,7 +210,7 @@ const ForgotPassword = () => {
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         @keyframes fade-in {
           0% { opacity: 0; transform: translateY(20px); }
           100% { opacity: 1; transform: translateY(0); }
