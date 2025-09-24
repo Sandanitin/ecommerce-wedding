@@ -20,7 +20,7 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { path: "/admin", label: "Dashboard" },
+    { path: "/admin/dashboard", label: "Dashboard" },
     { path: "/admin/products", label: "Products" },
     { path: "/admin/orders", label: "Orders" },
     { path: "/admin/logout", label: "Logout", isLogout: true },
@@ -31,7 +31,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-4">
-            <Link to="/admin" className="flex items-center space-x-3">
+            <Link to="/admin/dashboard" className="flex items-center space-x-3">
               <img src="/images/logo.png" alt="logo" className="w-10 h-auto" />
               <span className="text-xl font-extrabold text-red-600">
                 WEDDING

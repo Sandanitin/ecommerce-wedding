@@ -10,15 +10,17 @@ import Orders from "./pages/Orders";
 import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import TestAuth from "./pages/TestAuth";
+import VerifyOTP from "./pages/auth/VerifyOTP";
 
 const AdminApp = () => {
   return (
     <AdminAuthProvider>
       <Toaster position="top-right" />
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/test-auth" element={<TestAuth />} />
+        <Route path="login" element={<Login />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="verify-otp" element={<VerifyOTP />} />
+        <Route path="test-auth" element={<TestAuth />} />
         <Route
           path="/*"
           element={
@@ -28,9 +30,11 @@ const AdminApp = () => {
                 <div className="pt-16 pb-20">
                   <Routes>
                     <Route index element={<Dashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
                     <Route path="products" element={<Products />} />
                     <Route path="orders" element={<Orders />} />
-                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                    <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+
                   </Routes>
                 </div>
                 <BottomNav />

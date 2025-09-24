@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -39,6 +39,8 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/profile" element={<Profile />} />
+             <Route path="/forgot-password" element={<Navigate to="/admin/forgot-password" replace />} />
+            
               <Route path="/admin/*" element={<AdminApp />} />
             </Routes>
           </main>

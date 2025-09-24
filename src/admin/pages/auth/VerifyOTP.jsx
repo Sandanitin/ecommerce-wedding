@@ -25,7 +25,7 @@ const VerifyOTP = () => {
 
     setLoading(true);
     try {
-      const res = await adminApi.auth.verifyOTP(email, otp);
+      const res = await adminApi.auth.verifyOTP({ email, otp });
       
       if (res.data.success) {
         toast.success("OTP verified successfully!");
@@ -52,7 +52,7 @@ const VerifyOTP = () => {
     setLoading(true);
     try {
       // Reset password
-      const res = await adminApi.auth.resetPassword(email, otp, newPassword);
+      const res = await adminApi.auth.resetPassword({ email, code: otp, newPassword });
       
       if (res.data.success) {
         toast.success("Password reset successfully! Logging you in...");
@@ -62,8 +62,8 @@ const VerifyOTP = () => {
         
         if (loginResult.success) {
           toast.success("Welcome back! Redirecting to dashboard...");
-          // Redirect to dashboard
-          navigate("/");
+          // Redirect to admin dashboard
+          navigate("/admin/dashboard", { replace: true });
         } else {
           toast.error("Password reset successful, but login failed. Please login manually.");
           navigate("/login");
@@ -79,7 +79,7 @@ const VerifyOTP = () => {
   const handleResendOTP = async () => {
     setLoading(true);
     try {
-      const res = await adminApi.auth.forgotPassword(email);
+      const res = await adminApi.auth.forgotPassword({ email });
       
       if (res.data.success) {
         toast.success("New OTP sent to your email!");
@@ -138,8 +138,8 @@ const VerifyOTP = () => {
 
           <div className="text-center mt-4 text-sm">
             <span className="text-gray-700">Remember your password?</span>{" "}
-            <Link
-              to="/login"
+          <Link
+              to="/admin/login"
               className="text-blue-500 font-semibold hover:underline"
             >
               Back to Login →
@@ -202,7 +202,7 @@ const VerifyOTP = () => {
         <div className="text-center mt-4 text-sm">
           <span className="text-gray-700">Remember your password?</span>{" "}
           <Link
-            to="/login"
+            to="/admin/login"
             className="text-green-500 font-semibold hover:underline"
           >
             Back to Login →

@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import HeroCarousel from '../components/HeroCarousel'
 import frontendApi from '../services/api'
-
-import CategoryStrip from '../components/CategoryStrip'
 import CategoryCards from '../components/CategoryCards'
 import Newsletter from '../components/Newsletter'
+import WhyChoose from '../components/WhyChoose'
+import PromoBanners from '../components/PromoBanners'
+import Testimonials from '../components/Testimonials'
 
 const Home = () => {
   const [products, setProducts] = useState([])
@@ -40,10 +41,10 @@ const Home = () => {
   const comboFeatured = products.filter(p => [
     'Combos - Pre-Wedding Photo Shoot Sets', 'Combos - Wedding Day Combos', 'Combos - Sangeet/Haldi Twin Themes'
   ].includes(p.category)).slice(0, 8)
-  
 
   return (
     <div>
+      {/* Hero */}
       <section className="bg-gradient-to-br from-primary-100/40 via-white to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="rounded-2xl shadow-sm ring-1 ring-black/5 overflow-hidden">
@@ -52,15 +53,26 @@ const Home = () => {
         </div>
       </section>
 
-      {/* <CategoryStrip /> */}
-     
-      <CategoryCards />
+      {/* Quick Categories */}
+      <section className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Shop by category</h2>
+            <Link to="/products" className="text-primary-700 hover:text-primary-800 font-medium">Browse all →</Link>
+          </div>
+          <CategoryCards />
+        </div>
+      </section>
 
-      <section id="featured" className="bg-gradient-to-br from-rose-50/30 via-pink-50/20 to-purple-50/30">
+      {/* Value Props */}
+      <WhyChoose />
+
+      {/* Featured Collections */}
+      <section id="featured-bride" className="bg-gradient-to-br from-rose-50/30 via-pink-50/20 to-purple-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">👰 Featured Bride Collection</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Bride Collection</h2>
               <p className="text-gray-600">Elegant bridal wear for your special day</p>
             </div>
             <Link to="/products?category=Bride - Wedding Dresses" className="text-rose-600 hover:text-rose-700 font-medium">View all bride →</Link>
@@ -76,11 +88,11 @@ const Home = () => {
         </div>
       </section>
 
-      <section id="groom" className="bg-white">
+      <section id="featured-groom" className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">🤵 Featured Groom Collection</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Groom Collection</h2>
               <p className="text-gray-600">Stylish groom wear for the perfect look</p>
             </div>
             <Link to="/products?category=Groom - Wedding Dresses / Sherwanis / Suits" className="text-blue-600 hover:text-blue-700 font-medium">View all groom →</Link>
@@ -96,11 +108,11 @@ const Home = () => {
         </div>
       </section>
 
-      <section id="combos" className="bg-gradient-to-br from-purple-50/30 via-pink-50/20 to-rose-50/30">
+      <section id="featured-combos" className="bg-gradient-to-br from-purple-50/30 via-pink-50/20 to-rose-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex items-end justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">💑 Featured Couple Combos</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Couple Combos</h2>
               <p className="text-gray-600">Perfect matching sets for bride and groom</p>
             </div>
             <Link to="/products?category=Combos - Pre-Wedding Photo Shoot Sets" className="text-purple-600 hover:text-purple-700 font-medium">View all combos →</Link>
@@ -116,6 +128,11 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Promos & Social Proof */}
+      <PromoBanners />
+      <Testimonials />
+
+      {/* Newsletter */}
       <Newsletter />
     </div>
   )

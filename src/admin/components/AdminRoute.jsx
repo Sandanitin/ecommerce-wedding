@@ -4,6 +4,14 @@ import { useAuth } from '../context/AuthContext';
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin, loading, user } = useAuth();
 
+  console.log('AdminRoute - Auth state:', { 
+    isAuthenticated, 
+    isAdmin: isAdmin(), 
+    user, 
+    loading,
+    userRole: user?.role 
+  });
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -13,10 +21,12 @@ const AdminRoute = ({ children }) => {
   }
 
   if (!isAuthenticated) {
+    console.log('Not authenticated, redirecting to login');
     return <Navigate to="/admin/login" replace />;
   }
 
   if (!isAdmin()) {
+    console.log('User is not an admin, showing access denied');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -27,6 +37,7 @@ const AdminRoute = ({ children }) => {
           </div>
           <h2 className="mt-4 text-2xl font-bold text-gray-900">Access Denied</h2>
           <p className="mt-2 text-gray-600">You don't have permission to access the admin panel.</p>
+          <p className="mt-1 text-sm text-gray-500">User role: {user?.role || 'undefined'}</p>
         </div>
       </div>
     );

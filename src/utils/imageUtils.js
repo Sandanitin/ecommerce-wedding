@@ -9,24 +9,14 @@ const BACKEND_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 export const getImageUrl = (imagePath) => {
   try {
     if (!imagePath || typeof imagePath !== 'string') return FALLBACK_IMG;
+    // Cloudinary or absolute URL: return as is
     if (imagePath.startsWith('http')) return imagePath;
-    
+    // Legacy local path support
     let normalizedPath = imagePath.replace(/\\/g, '/');
-
-    // If it's a bare filename (no slash), assume uploads/products
-    if (!normalizedPath.includes('/')) {
-      normalizedPath = `uploads/products/${normalizedPath}`;
-    }
-    // Ensure it starts with /uploads
     if (!normalizedPath.startsWith('/')) {
       normalizedPath = `/${normalizedPath}`;
     }
-    
-    // Prefer absolute URL when backend URL is configured
-    if (BACKEND_URL) {
-      return `${BACKEND_URL}${normalizedPath}`;
-    }
-    // Fallback to relative path (dev proxy)
+    if (BACKEND_URL) return `${BACKEND_URL}${normalizedPath}`;
     return normalizedPath;
   } catch {
     return FALLBACK_IMG;

@@ -49,47 +49,20 @@ const Login = () => {
     setLoading(true);
     try {
       console.log('Attempting login with:', formData);
-      const response = await adminApi.auth.login(formData);
-      console.log('Full response object:', response);
-      console.log('Response data:', response?.data);
-      console.log('Response data.data:', response?.data?.data);
+      const result = await login(formData);
       
-      // Check if user data exists in the response
-      const userData = response?.data?.data?.user || response?.data?.user;
-      console.log('User data:', userData);
-      
-      if (!userData) {
-        console.error('No user data found in response');
-        throw new Error('Invalid server response: Missing user data');
+      if (result.success) {
+        console.log('Login successful');
+        toast.success("Login successful");
+        // Redirect to admin dashboard index and replace history
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        throw new Error(result.message || "Login failed");
       }
-      
-      const token = response?.data?.token || response?.data?.data?.token;
-      if (!token) {
-        console.error('No token found in response');
-        throw new Error('Invalid server response: Missing token');
-      }
-      
-      console.log('User role from response:', userData.role);
-      console.log('All user properties:', Object.keys(userData));
-      
-      // Store the token and user data
-      localStorage.setItem("adminToken", token);
-      localStorage.setItem("adminUser", JSON.stringify(userData));
-      
-      // Update auth context
-      await login(token, userData);
-      
-      console.log('Login successful, user role:', userData.role);
-      toast.success("Login successful");
-      navigate("/");
     } catch (error) {
       console.error('Login error:', error);
-      const errorMessage = error.response?.data?.message || error.message || "Login failed";
+      const errorMessage = error.message || "Login failed";
       toast.error(errorMessage);
-      
-      // Clear any partial login data
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
     } finally {
       setLoading(false);
     }
@@ -201,7 +174,7 @@ const Login = () => {
               {/* Forgot Password Link */}
               <div className="text-center">
                 <Link
-                  to="/forgot-password"
+                  to="/admin/forgot-password"
                   className="text-gray-400 hover:text-gray-300 text-sm font-medium transition-colors duration-200 hover:underline"
                 >
                   Forgot your password?

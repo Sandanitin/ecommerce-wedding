@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import adminApi from "../../../services/api";
+import adminApi from "../../services/api";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -14,19 +14,26 @@ const ForgotPassword = () => {
   const handleRequestCode = async (e) => {
     e.preventDefault();
     if (!email) return toast.error("Email is required");
+    const emailToSend = String(email).trim().toLowerCase();
 
     setLoading(true);
     try {
-      const res = await adminApi.auth.forgotPassword({ email });
-      toast.success("Reset code sent to your email");
-      setStep(2); // Move to verification step
+      const res = await adminApi.auth.forgotPassword({ email: emailToSend });
+      if (res.data?.success) {
+        toast.success("Reset code sent to your email");
+        // Redirect to VerifyOTP screen with email in state
+        navigate("/admin/verify-otp", { state: { email: emailToSend } });
+      } else {
+        toast.error(res.data?.message || "Failed to send reset code");
+      }
       
       // For testing - show the code in console
       if (res.data?.testCode) {
         console.log("Test reset code:", res.data.testCode);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to send reset code");
+      const message = err.normalized?.message || err.response?.data?.message || err.message || "Failed to send reset code";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -35,7 +42,8 @@ const ForgotPassword = () => {
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     if (!resetCode) return toast.error("Please enter the reset code");
-    setStep(3); // Move to password reset step
+    // This step is now handled in VerifyOTP screen
+    navigate("/verify-otp", { state: { email } });
   };
 
   const handleResetPassword = async (e) => {
